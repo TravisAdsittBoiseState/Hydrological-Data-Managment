@@ -1,0 +1,17 @@
+[
+	{
+	"hostName": "ftp.ssec.wisc.edu",
+	"interval":"1",
+	"protocol": "ftp",
+	"directory": "/pub/mtpw2/data/#yyyy##mm#/",
+	"fileName": "comp#yyyy##mm##dd#.#hh#0000.nc"
+	},
+	{
+	"hostName": "n5eil01u.ecs.nsidc.org",
+	"interval":"1",
+	"protocol": "http",
+	"directory": "/SMAP/SPL3SMP_E.005/#yyyy#.#mm#.#dd#/",
+	"fileName": "SMAP_L3_SM_P_#yyyy##mm##dd#_R16010_001.h5"
+	}
+]
+

@@ -1,0 +1,49 @@
+{% load staticfiles %}
+<html>
+  <head>
+    <link rel="shortcut icon" type="image/png" href="/images/favicon.ico"/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'home/style.css' %}"/>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu" rel="stylesheet"> 
+  </head>
+
+  <!-- Navbar -->
+  <nav class="navbar sticky-top navbar-expand-lg navbar-dark bg-dark">
+    <a class="navbar-brand ubuntu" href="{% url 'home:home' %}">GeoMiners</a>
+    {% if user.is_authenticated %}
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggle" aria-controls="navbarToggle" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarToggle">
+      <ul class="navbar-nav mr-auto mt-2 mt-lg-0 ubuntu">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'home:home' %}">Home <span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'noaa:noaa' %}">NOAA</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'nasa:nasa' %}">NASA</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav mt-2 mt-lg-0 navbar-right ubuntu">
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'logout:logout' %}">Logout</a>
+        </li>
+      </ul>
+    </div>
+    {% endif %}
+  </nav>
+  <!-- /Navbar -->
+  
+  <body id="background">
+    <div>
+      {% block content %}
+      {% endblock %}
+    </div>
+  </body>
+
+</html>

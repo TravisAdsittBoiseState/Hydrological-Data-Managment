@@ -1,0 +1,36 @@
+#home-container {
+	font-family: 'Ubuntu', sans-serif;
+	/*background-color: #6D9DC5;  /* Cerulean Frost :^] */
+}
+
+#home-description {
+	font-family: 'Ubuntu', sans-serif;
+	background-color: lightgrey;
+	padding-top: 10px;
+}
+
+#home-welcome {
+	font-family: 'Ubuntu', sans-serif;
+	background-color: lightgrey;
+	padding-top: 10px;
+}
+
+#background {
+	background: url('images/world.jpg');
+	background-size:cover
+}
+
+#home-title {
+	font-family: 'Ubuntu', sans-serif;
+	font-size: 3.5em;
+	color: #FFFFFF;
+	padding-bottom: 20px;
+}
+
+.ubuntu {
+ 	font-family: 'Ubuntu', sans-serif;
+}
+
+.file-list {
+	padding-bottom: 20px;
+}

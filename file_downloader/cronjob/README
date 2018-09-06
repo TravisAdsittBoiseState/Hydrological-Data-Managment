@@ -1,0 +1,70 @@
+###Cron Job Info###
+cron is a time-based job scheduler built into Unix systems.  We use it to regularly execute our programs on an hourly basis.
+https://en.wikipedia.org/wiki/Cron
+
+addCronJob.sh is a script file which automatically adds the job to chron and instructs this job to execute hourly.
+
+startProcess.sh is the script file which is executed hourly by cron.  This script checks to see if the main.py file is currently running.
+If it is found running, then the startProcess.sh script kills main.py assuming it to be running in error since it should in no way take
+an hour to run.  After killing it, or finding it not running, it will start main.py and then ensure it is running before the script exits.
+You could alternatively have cron just launch main.py on an hourly basis, but then you have no way to know if you are starting another
+instance, or if there has been some error with its launch.
+
+
+for this project:
+In addcronjob.sh nothing needs to be updated as long as the cronjob folder is not moved from it's current position within the repository.
+
+AND
+
+if you wish to re-name or relocate the log file for startProcess.sh; open the file and update the LOGFILE variable.
+
+
+
+
+##GENERAL CRONTAB INFO:
+
+#To list existing cron jobs:
+$crontab –l
+
+#To add new / edit or remove an existing cron job:
+$crontab –e
+##enter new cron job on new line
+##or Delete or edit the line that contains cron job to remove / edit
+##save the file
+
+#To Delete all cron jobs:
+$crontab -ry
+
+
+examples:
+
+$crontab -e
+add below to file:
+@hourly <path>/startProcess.sh
+save and close file.
+and that is it!
+You just added the startProcess script to your crontab
+
+
+#formatting for cron jobs shown below:
+i.e. to run a job every hour at zero minutes past the hour
+0 * * * * </path/job>
+or
+@hourly <path/job>
+
+i.e. to run a job every minute:
+* * * * * </path/job>
+
+helpful site with examples:
+https://crontab.guru/crontab.5.html
+
+# +---------------- minute (0 - 59)
+# |  +------------- hour (0 - 23)
+# |  |  +---------- day of month (1 - 31)
+# |  |  |  +------- month (1 - 12)
+# |  |  |  |  +---- day of week (0 - 6) (Sunday=0 or 7)
+# |  |  |  |  |
+  *  *  *  *  *  command to be executed
+
+
+JB

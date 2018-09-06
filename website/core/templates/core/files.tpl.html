@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="home-container" class="container text-center">
+	<h1 id="home-title">{{organization}} Files</h1>
+</div>
+
+<div class="card col-md-6 offset-md-3" id="home-description">
+	<h2 class="text-center">Files currently in the system</h2>
+	<hr>
+	<div class="file-list">
+		<h5>Number of files: {{num_files}}</h5>
+		<ul class="list-group">
+			{% for file in files %}
+				<li type="button" class="list-group-item list-group-item-action">
+				    {{file}}
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}
