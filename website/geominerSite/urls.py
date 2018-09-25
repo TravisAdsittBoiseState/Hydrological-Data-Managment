@@ -15,20 +15,27 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.views.generic import RedirectView
+
 from django.conf.urls import include, url
 from django.contrib.auth.views import LoginView
 from core import views as core_views
 
 urlpatterns = [
-	path('', include('core.urls')),
+	#path('', include('core.urls')),
+	url(r'', include('core.urls', namespace='home')),
     url(r'^admin/', admin.site.urls),
     url(r'^$', core_views.home, name='home'),
     url(r'^$', core_views.nasa, name='nasa'),
     url(r'^$', core_views.noaa, name='noaa'),
+	url(r'^$', core_views.get_name, name='name'),
     url(r'^login/$', LoginView.as_view()),
     url(r'^logout/', include('core.urls', namespace='logout')),
     url("^soc/", include("social_django.urls", namespace="social")),
     url(r'^', include('core.urls', namespace='home')),
     url(r'^', include('core.urls', namespace='nasa')),
     url(r'^', include('core.urls', namespace='noaa')),
+	url(r'^', include('core.urls', namespace='get_name')),
+	
+	#path('', RedirectView.as_view(url=r'^login/', permanent=True))
 ]
