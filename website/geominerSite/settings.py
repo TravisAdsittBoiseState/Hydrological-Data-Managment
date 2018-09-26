@@ -135,7 +135,7 @@ LOGGING = {
         'disable_existing_loggers': False,
         'handlers': {
             'applogfile':{
-                'level':'DEBUG',
+                'level':'INFO',
                 'class':'logging.handlers.RotatingFileHandler',
                 'filename': './debug.log',
                 'maxBytes': 1024*1024*15,
