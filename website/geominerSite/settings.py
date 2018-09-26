@@ -130,7 +130,25 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
+LOGGING = {
+        'version': 1,
+        'disable_existing_loggers': False,
+        'handlers': {
+            'applogfile':{
+                'level':'INFO',
+                'class':'logging.handlers.RotatingFileHandler',
+                'filename': './debug.log',
+                'maxBytes': 1024*1024*15,
+                'backupCount':10,
+                },
+            },
+        'loggers': {
+            'django':{
+                'handlers':['applogfile'],
+                'level':'DEBUG',
+                },
+            },
+        }
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.0/topics/i18n/
