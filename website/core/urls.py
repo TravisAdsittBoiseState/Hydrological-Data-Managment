@@ -6,6 +6,6 @@ urlpatterns = [
 	path('', views.home, name='home'),
 	path('nasa', views.nasa, name='nasa'),
 	path('noaa', views.noaa, name='noaa'),
+	path('name', views.get_name, name='get_name'),
 	path('logout', views.logout, name='logout')
-	# path('home', views.home, name='home')
 ]

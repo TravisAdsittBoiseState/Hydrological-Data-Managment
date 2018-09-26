@@ -7,7 +7,9 @@
 </div>
 
 {% if user.is_authenticated %}
-<div class="card col-md-6 offset-md-3" id="home-description" style="margin-bottom: 20px;">
+<div class="card col-md-6 offset-md-3" 
+  id="home-description" 
+  style="margin-bottom: 20px;">
     <h2 class="text-center">Hello, {{ user.username }}!</h2>
 </div>
 <div class="card col-md-6 offset-md-3" id="home-description">
@@ -16,6 +18,10 @@
 	<p>
 		We propose a service that can be deployed locally by a researcher. The server will periodically download relevant data. A database should be kept so that the researcher can quickly discover which files are present/absent from the local collection. Additionally, a subsetting service should be available that allows the researcher to subset a file or set of files. All original data should be kept and the subsetting should result in copies.
 	</p>
+</div>
+{% else %}
+<div class="container text-center">
+  <a href="/login" class="btn btn-success text-center">Login</a>
 </div>
 {% endif %}
 {% endblock %}
