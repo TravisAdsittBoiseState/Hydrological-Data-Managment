@@ -7,6 +7,11 @@ from django.dispatch import receiver
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, on_delete=models.CASCADE)
 	gmail = models.CharField(max_length=255, blank=True)
+	
+class DataRequest(models.Model):
+    name = models.CharField(max_length=255)
+    url = models.CharField(max_length=1000)
+    description = models.CharField(max_length=1000)
 
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):

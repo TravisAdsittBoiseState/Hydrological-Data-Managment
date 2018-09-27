@@ -25,17 +25,16 @@ urlpatterns = [
 	#path('', include('core.urls')),
 	url(r'', include('core.urls', namespace='home')),
     url(r'^admin/', admin.site.urls),
-    url(r'^$', core_views.home, name='home'),
+	url(r'^$', core_views.home, name='home'),
     url(r'^$', core_views.nasa, name='nasa'),
     url(r'^$', core_views.noaa, name='noaa'),
-	url(r'^$', core_views.get_name, name='name'),
+	url(r'^$', core_views.dataRequest, name='dataRequest'),
     url(r'^login/$', LoginView.as_view()),
     url(r'^logout/', include('core.urls', namespace='logout')),
     url("^soc/", include("social_django.urls", namespace="social")),
-    url(r'^', include('core.urls', namespace='home')),
     url(r'^', include('core.urls', namespace='nasa')),
     url(r'^', include('core.urls', namespace='noaa')),
-	url(r'^', include('core.urls', namespace='get_name')),
+	url(r'^', include('core.urls', namespace='dataRequest')),
 	
 	#path('', RedirectView.as_view(url=r'^login/', permanent=True))
 ]

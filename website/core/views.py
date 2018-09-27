@@ -5,10 +5,9 @@ from django.template import Context, loader
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
-from .forms import NameForm
+from .forms import DataRequestForm
 import os
 
-#@login_required
 def home(request):
 	user = request.user
 	return render(request, 'core/home.html')
@@ -37,23 +36,16 @@ def noaa(request):
 	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files})
 
 @login_required
-def get_name(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = NameForm(request.POST)
-        # check whether it's valid:
+def dataRequest(request):
+    if request.method == "POST":
+        form = DataRequestForm(request.POST)
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            return HttpResponseRedirect('/thanks/')
-
-    # if a GET (or any other method) we'll create a blank form
+            dr = form.save(commit=False)
+            dr.save()
+            return redirect(home)
     else:
-        form = NameForm()
-
-    return render(request, 'name.html', {'form': form})
+        form = DataRequestForm()
+    return render(request, 'core/dataRequest.html', {'form': form})
 
 #-- Helper Functions --#
 
