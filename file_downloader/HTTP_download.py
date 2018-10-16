@@ -74,7 +74,7 @@ def DL_HTTP_NASA(date):
         r1 = session.request('get', fullURL)
         r = session.get(r1.url, auth=(username, password))
         if r.ok:
-            print('success')
+            print('success')			
             #pass the html from the folder into our parser
             parser = NASAHTMLParser()
             parser.feed(r.text)
