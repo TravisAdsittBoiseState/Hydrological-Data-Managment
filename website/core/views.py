@@ -21,15 +21,13 @@ def logout(request):
 def nasa(request):
 	user = request.user
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-	myfiles = os.path.join(path, r'file-downloader\downloaded-files\n5eil01u.ecs.nsidc.org')
+	myfiles = os.path.join(path, r'file_downloader\downloaded-files\n5eil01u.ecs.nsidc.org')
 	
 	file_list = []
 	for root, dirs, files in os.walk(myfiles):
 		for file in files:
-			#if file.endswith('.nc'):
-			file_list.append(file)
-			
-	print(file_list)
+			if file.endswith('.h5'):
+				file_list.append(file)
 	
 	num_files = len(file_list)
 	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files})
