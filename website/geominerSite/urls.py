@@ -35,6 +35,7 @@ urlpatterns = [
     url(r'^', include('core.urls', namespace='nasa')),
     url(r'^', include('core.urls', namespace='noaa')),
 	url(r'^', include('core.urls', namespace='dataRequest')),
-	
+	url(r'^download/$',core_views.download, name='download')
+
 	#path('', RedirectView.as_view(url=r'^login/', permanent=True))
 ]

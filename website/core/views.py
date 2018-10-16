@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from .forms import DataRequestForm
+from django.core.files import File
 import os
 
 def home(request):
@@ -30,7 +31,7 @@ def nasa(request):
 				file_list.append(file)
 	
 	num_files = len(file_list)
-	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files})
+	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files, 'abspath': myfiles})
 
 @login_required
 def noaa(request):
@@ -45,7 +46,7 @@ def noaa(request):
 				file_list.append(file)	
 	
 	num_files = len(file_list)
-	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files})
+	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files, 'abspath': myfiles})
 
 @login_required
 def dataRequest(request):
@@ -67,3 +68,13 @@ def count(dir, counter=0):
         for f in pack[2]:
             counter += 1
     return str(counter)
+	
+#lets user download file
+@login_required
+def download(request):
+        location = request.GET.get('location')
+        file = location
+        contents = open(file, 'r')
+        response = HttpResponse(contents, content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % location.split('/')[-1]
+        return response
