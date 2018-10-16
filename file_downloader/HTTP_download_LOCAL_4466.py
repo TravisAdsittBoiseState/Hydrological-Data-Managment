@@ -41,7 +41,6 @@ def DL_MISSED_HTTP_NASA():
     logging.info("Getting missing NASA files")
     filesToDL = set()
     if not os.path.exists("missingDaysNASA.txt"):
-        logging.warning("unable to find missingDaysNASA.txt. Returning")
         return
     os.replace("missingDaysNASA.txt", "daysToGetNASA.txt")
     missing = open("daysToGetNASA.txt", "r")
@@ -69,7 +68,7 @@ def DL_HTTP_NASA(date):
     #if the result of trying to retrieve a day is 404, then we
     #add it to days to try to get later and exit
     if r.status_code == 401:
-        logging.info("Received 401: Unauthorized, verify ~/.netrc is present")
+        logging.error("Received 401: Unauthorized, verify ~/.netrc is present")
     if r.status_code == 404:
         logging.info("No files found for day: " + date + ", adding to missingDaysNASA.txt")
         missingDays = open("missingDaysNASA.txt", "a")
@@ -78,26 +77,6 @@ def DL_HTTP_NASA(date):
     #pass the html from the folder into our parser
     parser = NASAHTMLParser()
     parser.feed(r.text)
-    #pull the fileNames from that folder (those that end in h5)
-    filesToDownload = parser.filesToGet
-    for resourceName in filesToDownload:
-        HTTP_download(hostname, path, resourceName)
-
-#downloads the named resource from the defined host with the given path
-def HTTP_download(host, path, resource):
-    fullRequestURL = "http://" + host + path + resource
-    outdir = "downloaded-files/" + host + path
-    r = requests.get(fullRequestURL, stream=True)
-    if r.status_code == 401:
-        #unauthorized
-        logging.warning("You do not have authorization to retrieve file from this server, verify your credentials are correct in ~/.netrc\n")
-        return
-    if r.status_code == 403:
-        logging.warning("403 Error")
-        #forbidden, try https
-    #pass the html from the folder into our parser
-    parser = NASAHTMLParser()
-    parser.feed(sesRes)
     #pull the fileNames from that folder (those that end in h5)
     filesToDownload = parser.filesToGet
     for resourceName in filesToDownload:
@@ -125,7 +104,7 @@ def HTTP_download(host, path, resource):
         out.close()
         return
     if os.path.exists(outdir + "/" + resource):
-        print("Resource: " + resource + " has already been downloaded")
+        logging.info("Resource: " + resource + " has already been downloaded")
         return
     #download the resource by writing bytes out to the file
     with open(resource, 'wb') as fd:
@@ -144,11 +123,6 @@ def HTTP_download(host, path, resource):
     #move the file to its appropriate folder on filesystem
     os.makedirs(outdir, exist_ok=True)
     os.replace(resource, outdir + "/" + resource)
-
-#example of using this module to download data for a given day as well
-#as all days that have been missed up to this point
-#DL_MISSED_HTTP_NASA()
-#DL_HTTP_NASA("2018.02.28")
 
 #example of using this module to download data for a given day as well
 #as all days that have been missed up to this point
