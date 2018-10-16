@@ -21,18 +21,32 @@ def logout(request):
 def nasa(request):
 	user = request.user
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-	myfiles = os.path.join(path, 'downloaded-files/n5eil01u.ecs.nsidc.org')
-	file_list = os.listdir(myfiles)
-	num_files = count(myfiles)
+	myfiles = os.path.join(path, r'file-downloader\downloaded-files\n5eil01u.ecs.nsidc.org')
+	
+	file_list = []
+	for root, dirs, files in os.walk(myfiles):
+		for file in files:
+			#if file.endswith('.nc'):
+			file_list.append(file)
+			
+	print(file_list)
+	
+	num_files = len(file_list)
 	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files})
 
 @login_required
 def noaa(request):
 	user = request.user
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-	myfiles = os.path.join(path, 'downloaded-files/ftp.ssec.wisc.edu')
-	file_list = os.listdir(myfiles)
-	num_files = count(myfiles)
+	myfiles = os.path.join(path, r'file_downloader\downloaded-files\ftp.ssec.wisc.edu')
+	
+	file_list = []
+	for root, dirs, files in os.walk(myfiles):
+		for file in files:
+			if file.endswith('.nc'):
+				file_list.append(file)	
+	
+	num_files = len(file_list)
 	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files})
 
 @login_required

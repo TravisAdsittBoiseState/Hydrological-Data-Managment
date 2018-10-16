@@ -3,6 +3,7 @@ import os
 import shutil
 
 from html.parser import HTMLParser
+from requests.auth import HTTPBasicAuth
 
 #parser used for retrieving filenames from the web page returned by
 #asking for the folder that refers to a given day
@@ -41,6 +42,7 @@ def DL_MISSED_HTTP_NASA():
     print("Getting missing NASA files")
     filesToDL = set()
     if not os.path.exists("missingDaysNASA.txt"):
+        print("unable to find missingDaysNASA.txt. Returning")
         return
     os.replace("missingDaysNASA.txt", "daysToGetNASA.txt")
     missing = open("daysToGetNASA.txt", "r")
@@ -61,26 +63,41 @@ def DL_HTTP_NASA(date):
     #first we have to get the containing folder
     hostname = 'n5eil01u.ecs.nsidc.org'
     path = '/SMAP/SPL3SMP.005/' + date + '/'
-    fullURL = "https://" + hostname + path
+    fullURL = "https://" + hostname + path		
     print(fullURL)
-    print('Getting listing of files from day: ' + date)
-    r = requests.get(fullURL)
-    #if the result of trying to retrieve a day is 404, then we
-    #add it to days to try to get later and exit
-    if r.status_code == 401:
-        print("Received 401: Unauthorized, verify ~/.netrc is present")
-    if r.status_code == 404:
-        print("No files found for day: " + date + ", adding to missingDaysNASA.txt")
-        missingDays = open("missingDaysNASA.txt", "a")
-        missingDays.write(date + "\n")
-        return
-    #pass the html from the folder into our parser
-    parser = NASAHTMLParser()
-    parser.feed(r.text)
-    #pull the fileNames from that folder (those that end in h5)
-    filesToDownload = parser.filesToGet
-    for resourceName in filesToDownload:
-        HTTP_download(hostname, path, resourceName)
+	
+    username = "K1ASER"
+    password = "E,_dQlDUM.:3"
+	
+    with requests.Session() as session:
+        session.auth = (username, password)
+        r1 = session.request('get', fullURL)
+        r = session.get(r1.url, auth=(username, password))
+        if r.ok:
+            print('success')
+            #pass the html from the folder into our parser
+            parser = NASAHTMLParser()
+            parser.feed(r.text)
+            #pull the fileNames from that folder (those that end in h5)
+            filesToDownload = parser.filesToGet
+            for resourceName in filesToDownload:
+                HTTP_download(hostname, path, resourceName)
+        elif r.status_code == 401:
+            print("Received 401: Unauthorized, verify ~/.netrc is present")
+            return
+        #if the result of trying to retrieve a day is 404, then we
+        #add it to days to try to get later and exit
+        elif r.status_code == 404:
+            print("No files found for day: " + date + ", adding to missingDaysNASA.txt")
+            missingDays = open("missingDaysNASA.txt", "a")
+            missingDays.write(date + "\n")
+            return
+        else:
+            print("Failure!")
+            return
+
+    #print("success! {0}".format(r.text))            
+    
 
 #downloads the named resource from the defined host with the given path
 def HTTP_download(host, path, resource):
