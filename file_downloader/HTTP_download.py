@@ -41,6 +41,7 @@ def DL_MISSED_HTTP_NASA():
     logging.info("Getting missing NASA files")
     filesToDL = set()
     if not os.path.exists("missingDaysNASA.txt"):
+        print("unable to find missingDaysNASA.txt. Returning")
         return
     os.replace("missingDaysNASA.txt", "daysToGetNASA.txt")
     missing = open("daysToGetNASA.txt", "r")
@@ -62,15 +63,15 @@ def DL_HTTP_NASA(date):
     hostname = 'n5eil01u.ecs.nsidc.org'
     path = '/SMAP/SPL3SMP.005/' + date + '/'
     fullURL = "https://" + hostname + path
-    logging.info(fullURL)
-    logging.info('Getting listing of files from day: ' + date)
+    print(fullURL)
+    print('Getting listing of files from day: ' + date)
     r = requests.get(fullURL)
     #if the result of trying to retrieve a day is 404, then we
     #add it to days to try to get later and exit
     if r.status_code == 401:
-        logging.error("Received 401: Unauthorized, verify ~/.netrc is present")
+        print("Received 401: Unauthorized, verify ~/.netrc is present")
     if r.status_code == 404:
-        logging.info("No files found for day: " + date + ", adding to missingDaysNASA.txt")
+        print("No files found for day: " + date + ", adding to missingDaysNASA.txt")
         missingDays = open("missingDaysNASA.txt", "a")
         missingDays.write(date + "\n")
         return
@@ -89,7 +90,26 @@ def HTTP_download(host, path, resource):
     r = requests.get(fullRequestURL, stream=True)
     if r.status_code == 401:
         #unauthorized
-        logging.critical("You do not have authorization to retrieve file from this server, verify your credentials are correct in ~/.netrc\n")
+        print("You do not have authorization to retrieve file from this server, verify your credentials are correct in ~/.netrc\n")
+        return
+    if r.status_code == 403:
+        #forbidden, try https
+    #pass the html from the folder into our parser
+    parser = NASAHTMLParser()
+    parser.feed(sesRes)
+    #pull the fileNames from that folder (those that end in h5)
+    filesToDownload = parser.filesToGet
+    for resourceName in filesToDownload:
+        HTTP_download(hostname, path, resourceName)
+
+#downloads the named resource from the defined host with the given path
+def HTTP_download(host, path, resource):
+    fullRequestURL = "http://" + host + path + resource
+    outdir = "downloaded-files/" + host + path
+    r = requests.get(fullRequestURL, stream=True)
+    if r.status_code == 401:
+        #unauthorized
+        print("You do not have authorization to retrieve file from this server, verify your credentials are correct in ~/.netrc\n")
         return
     if r.status_code == 403:
         #forbidden, try https
@@ -104,17 +124,17 @@ def HTTP_download(host, path, resource):
         out.close()
         return
     if os.path.exists(outdir + "/" + resource):
-        logging.info("Resource: " + resource + " has already been downloaded")
+        print("Resource: " + resource + " has already been downloaded")
         return
     #download the resource by writing bytes out to the file
     with open(resource, 'wb') as fd:
-        logging.info('Downloading File ' + resource + '\n')
-        logging.info('|=', end='', flush=True)
+        print('Downloading File ' + resource + '\n')
+        print('|=', end='', flush=True)
         for chunk in r.iter_content(chunk_size=1024 * 1024 * 5):
             fd.write(chunk)
-            logging.info('=', end='', flush=True)
+            print('=', end='', flush=True)
         fd.close()
-        logging.info('=|', flush=True)
+        print('=|', flush=True)
     #verify the file downloaded is at least 100MB in size
     #because the files are usually ~250MB in size
     #if os.stat(resource).st_size < 1024*1024*100:
@@ -123,6 +143,11 @@ def HTTP_download(host, path, resource):
     #move the file to its appropriate folder on filesystem
     os.makedirs(outdir, exist_ok=True)
     os.replace(resource, outdir + "/" + resource)
+
+#example of using this module to download data for a given day as well
+#as all days that have been missed up to this point
+#DL_MISSED_HTTP_NASA()
+#DL_HTTP_NASA("2018.02.28")
 
 #example of using this module to download data for a given day as well
 #as all days that have been missed up to this point
