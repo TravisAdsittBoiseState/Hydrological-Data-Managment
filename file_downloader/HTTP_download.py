@@ -66,22 +66,17 @@ def DL_HTTP_NASA(date):
     fullURL = "https://" + hostname + path		
     print(fullURL)
 	
-    username = "K1ASER"
-    password = "E,_dQlDUM.:3"
+    username = os.environ['NASA_USER']
+    password  = os.environ['NASA_PASS']
+    
+    sesRes = ""
 	
     with requests.Session() as session:
         session.auth = (username, password)
         r1 = session.request('get', fullURL)
         r = session.get(r1.url, auth=(username, password))
         if r.ok:
-            print('success')			
-            #pass the html from the folder into our parser
-            parser = NASAHTMLParser()
-            parser.feed(r.text)
-            #pull the fileNames from that folder (those that end in h5)
-            filesToDownload = parser.filesToGet
-            for resourceName in filesToDownload:
-                HTTP_download(hostname, path, resourceName)
+            sesRes = r.text            
         elif r.status_code == 401:
             print("Received 401: Unauthorized, verify ~/.netrc is present")
             return
@@ -95,51 +90,54 @@ def DL_HTTP_NASA(date):
         else:
             print("Failure!")
             return
-
-    #print("success! {0}".format(r.text))            
     
+    #pass the html from the folder into our parser
+    parser = NASAHTMLParser()
+    parser.feed(sesRes)
+    #pull the fileNames from that folder (those that end in h5)
+    filesToDownload = parser.filesToGet
+    for resourceName in filesToDownload:
+        HTTP_download(hostname, path, resourceName, username, password)
 
 #downloads the named resource from the defined host with the given path
-def HTTP_download(host, path, resource):
-    fullRequestURL = "http://" + host + path + resource
+def HTTP_download(host, path, resource, username, password):
+    fullRequestURL = "https://" + host + path + resource
     outdir = "downloaded-files/" + host + path
-    r = requests.get(fullRequestURL, stream=True)
-    if r.status_code == 401:
-        #unauthorized
-        print("You do not have authorization to retrieve file from this server, verify your credentials are correct in ~/.netrc\n")
-        return
-    if r.status_code == 403:
-        #forbidden, try https
-        fullRequestURL = "https://" + host + path + resource
-    r = requests.get(fullRequestURL, stream=True)
-    if r.status_code == 404:
-        #the resource wasn't found
-        out = open("missingHTTP.txt", "a")
-        out.write(host + " ")
-        out.write(path + " ")
-        out.write(resource + "\n")
-        out.close()
-        return
-    if os.path.exists(outdir + "/" + resource):
-        print("Resource: " + resource + " has already been downloaded")
-        return
-    #download the resource by writing bytes out to the file
-    with open(resource, 'wb') as fd:
-        print('Downloading File ' + resource + '\n')
-        print('|=', end='', flush=True)
-        for chunk in r.iter_content(chunk_size=1024 * 1024 * 5):
-            fd.write(chunk)
-            print('=', end='', flush=True)
-        fd.close()
-        print('=|', flush=True)
-    #verify the file downloaded is at least 100MB in size
-    #because the files are usually ~250MB in size
-    #if os.stat(resource).st_size < 1024*1024*100:
-        #print('File size was smaller than expected, removing so we can try again later')
-        #shutil.rmtree(outdir)
-    #move the file to its appropriate folder on filesystem
-    os.makedirs(outdir, exist_ok=True)
-    os.replace(resource, outdir + "/" + resource)
+    
+    with requests.Session() as session:
+        session.auth = (username, password)
+        r1 = session.request('get', fullRequestURL)
+        r = session.get(r1.url, stream=True, auth=(username, password))
+        if r.status_code == 401:
+            #unauthorized
+            print("You do not have authorization to retrieve file from this server, verify your credentials are correct in ~/.netrc\n")
+            return
+        elif r.status_code == 403:
+            #forbidden, try https
+            fullRequestURL = "https://" + host + path + resource
+            r = requests.get(fullRequestURL)
+            if r.status_code == 404:
+                #the resource wasn't found
+                out = open("missingHTTP.txt", "a")
+                out.write(host + " ")
+                out.write(path + " ")
+                out.write(resource + "\n")
+                out.close()
+                return
+        elif os.path.exists(outdir + "/" + resource):
+            print("Resource: " + resource + " has already been downloaded")
+            return
+        else:
+            #download the resource by writing bytes out to the file
+            print('Downloading File ' + resource + '\n')
+            file = open(resource, 'wb')
+            for chunk in r.iter_content(100000):
+                file.write(chunk)
+            file.close()
+            
+        #move the file to its appropriate folder on filesystem
+        os.makedirs(outdir, exist_ok=True)
+        os.replace(resource, outdir + "/" + resource)
 
 #example of using this module to download data for a given day as well
 #as all days that have been missed up to this point
