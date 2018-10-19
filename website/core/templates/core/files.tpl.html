@@ -12,7 +12,7 @@
 		<h5>Number of files: {{num_files}}</h5>
 		<ul class="list-group">
 			{% for file in files %}
-				    <a href="/download/?location={{abspath}}/{{file}}" download>{{file}} </a>
+				    <a href="download/?file={{file}}"> {{file}} </a>
 			{% endfor %}
 		</ul>
 	</div>

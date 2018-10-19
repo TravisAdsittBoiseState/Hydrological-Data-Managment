@@ -43,10 +43,10 @@ def noaa(request):
 	for root, dirs, files in os.walk(myfiles):
 		for file in files:
 			if file.endswith('.nc'):
-				file_list.append(file)	
+				file_list.append(os.path.join(root,file))	
 	
 	num_files = len(file_list)
-	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files, 'abspath': myfiles})
+	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files})
 
 @login_required
 def dataRequest(request):
@@ -68,13 +68,13 @@ def count(dir, counter=0):
         for f in pack[2]:
             counter += 1
     return str(counter)
-	
+
 #lets user download file
 @login_required
 def download(request):
-        location = request.GET.get('location')
-        file = location
-        contents = open(file, 'r')
+        location = request.GET.get('file')
+        filename = location.split('\\')[-1]
+        contents = open(location, 'rb')
         response = HttpResponse(contents, content_type='application/force-download')
-        response['Content-Disposition'] = 'attachment; filename="%s"' % location.split('/')[-1]
+        response['Content-Disposition'] = 'attachment; filename="%s"' % filename
         return response
