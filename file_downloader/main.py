@@ -6,6 +6,11 @@ from FTP_download import *
 from HTTP_download import *
 import json
 from pprint import pprint
+import logging
+
+#Setting up Logging File
+logging.basicConfig(filename='cronlog.log',level=logging.DEBUG)
+
 
 #SSECDir = "/pub/mtpw2/data/"
 #SSECHost = "ftp.ssec.wisc.edu"
@@ -15,13 +20,13 @@ dateNow = datetime.utcnow().date()
 timeNow = datetime.utcnow()
 year = '{:04d}'.format(dateNow.year)
 month = '{:02d}'.format(dateNow.month)
-day = '{:02d}'.format(dateNow.day - 1)
+day = '{:02d}'.format(dateNow.day - 3)
 hour = timeNow.strftime('%H')
 minute = timeNow.strftime('%M')
 
 def main():
 	if os.path.exists("config.json"):
-		print("Reading config file.")
+		logging.info("Reading config file.")
 		config = json.load(open('config.json'))
 		for resource in config:
 			#check if this lines up with our specified interval
@@ -77,12 +82,12 @@ def checkForNASAFile():
 	NASAHost = "n5eil01u.ecs.nsidc.org"
 	#just need to see if the directory exists in this case, if not, we dont have our h5 file either.
 	NASASubFolder = "./downloaded-files/" + NASAHost + NASADir + "/" + year + "." + month + "." + day
-	print("Checking for nasa sub folder: " + NASASubFolder + "\n")
+	logging.info("Checking for nasa sub folder: " + NASASubFolder + "\n")
 	if os.path.exists(NASASubFolder):
-		print("Looks like the NASA sub folder already exists, no need to fetch its contents\n")
+		logging.info("Looks like the NASA sub folder already exists, no need to fetch its contents\n")
 	else:
 		#https://n5eil01u.ecs.nsidc.org/SMAP/SPL3SMP_E.001/2018.01.13/SMAP_L3_SM_P_E_20180113_R15181_002.h5
-		print("NASA subfolder for today does not exist. Attempting download.\n")
+		logging.info("NASA subfolder for today does not exist. Attempting download.\n")
 		#check for missed files first
 		DL_MISSED_HTTP_NASA()
 		#check for todays file

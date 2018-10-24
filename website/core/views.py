@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as django_logout
 from django.conf import settings
 from .forms import DataRequestForm
+from django.core.files import File
 import os
 
 def home(request):
@@ -21,18 +22,30 @@ def logout(request):
 def nasa(request):
 	user = request.user
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-	myfiles = os.path.join(path, 'downloaded-files/n5eil01u.ecs.nsidc.org')
-	file_list = os.listdir(myfiles)
-	num_files = count(myfiles)
-	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files})
+	myfiles = os.path.join(path, r'file_downloader\downloaded-files\n5eil01u.ecs.nsidc.org')
+	
+	file_list = []
+	for root, dirs, files in os.walk(myfiles):
+		for file in files:
+			if file.endswith('.h5'):
+				file_list.append(file)
+	
+	num_files = len(file_list)
+	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files, 'abspath': myfiles})
 
 @login_required
 def noaa(request):
 	user = request.user
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-	myfiles = os.path.join(path, 'downloaded-files/ftp.ssec.wisc.edu')
-	file_list = os.listdir(myfiles)
-	num_files = count(myfiles)
+	myfiles = os.path.join(path, r'file_downloader\downloaded-files\ftp.ssec.wisc.edu')
+	
+	file_list = []
+	for root, dirs, files in os.walk(myfiles):
+		for file in files:
+			if file.endswith('.nc'):
+				file_list.append(os.path.join(root,file))	
+	
+	num_files = len(file_list)
 	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files})
 
 @login_required
@@ -55,3 +68,13 @@ def count(dir, counter=0):
         for f in pack[2]:
             counter += 1
     return str(counter)
+
+#lets user download file
+@login_required
+def download(request):
+        location = request.GET.get('file')
+        filename = location.split('\\')[-1]
+        contents = open(location, 'rb')
+        response = HttpResponse(contents, content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="%s"' % filename
+        return response
