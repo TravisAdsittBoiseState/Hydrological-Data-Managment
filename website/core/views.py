@@ -28,10 +28,10 @@ def nasa(request):
 	for root, dirs, files in os.walk(myfiles):
 		for file in files:
 			if file.endswith('.h5'):
-				file_list.append(file)
+				file_list.append({'path': root, 'file_name': file})
 	
 	num_files = len(file_list)
-	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files, 'abspath': myfiles})
+	return render_to_response('core/files.tpl.html', {'organization': 'NASA', 'user': user, 'files': file_list, 'num_files': num_files})
 
 @login_required
 def noaa(request):
@@ -42,8 +42,8 @@ def noaa(request):
 	file_list = []
 	for root, dirs, files in os.walk(myfiles):
 		for file in files:
-			if file.endswith('.nc'):
-				file_list.append(os.path.join(root,file))	
+			if file.endswith('.nc'):				
+				file_list.append({'path': root, 'file_name': file})	
 	
 	num_files = len(file_list)
 	return render_to_response('core/files.tpl.html', {'organization': 'NOAA', 'user': user, 'files': file_list, 'num_files': num_files})
@@ -59,6 +59,22 @@ def dataRequest(request):
     else:
         form = DataRequestForm()
     return render(request, 'core/dataRequest.html', {'form': form})
+	
+@login_required
+def viewNOAA(request):
+    #-- Magic Happens Here --#
+    user = request.user
+    file_path = request.GET.get('file')
+    file_name = file_path.split("/")[len(file_path.split("/")) - 1]
+    return render_to_response('core/viewNOAA.html', {'file': file_name})
+	
+@login_required
+def viewNASA(request):
+    #-- Magic Happens Here --#
+    user = request.user
+    file_path = request.GET.get('file')
+    file_name = file_path.split("/")[len(file_path.split("/")) - 1]
+    return render_to_response('core/viewNASA.html', {'file': file_name})
 
 #-- Helper Functions --#
 
