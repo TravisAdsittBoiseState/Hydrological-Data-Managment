@@ -10,16 +10,33 @@
 	<hr>
 	<div class="file-list">
 		<h5>Number of files: {{num_files}}</h5>
-		<ul class="list-group">
+		<table class="table table-striped">
+			<thead>
+				<tr>
+				  <th>Select</th>
+				  <th>File Name</th>
+				  <th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
 			{% for file in files %}
-					<input type ="checkbox" id="checkbox_id" value="value">
-					<center>
-
-					<a href="download/?file={{file}}"> {{file}} </a>
-
-					</center>
+				<tr>			  
+				  <th><input type ="checkbox" id="checkbox_id" value="value"></th>
+				  <th>{{ file.file_name }}</th>
+				  <th>
+					<a class="btn btn-sm btn-success" href="download/?file={{ file.path }}/{{ file.file_name }}">Download</a>
+					{% if organization == "NOAA" %}
+						<a class="btn btn-sm btn-primary" href="/viewNOAA?file={{ file.path }}/{{ file.file_name }}">View</a>
+					{% elif organization == "NASA" %}
+						<a class="btn btn-sm btn-primary" href="/viewNASA?file={{ file.path }}/{{ file.file_name }}">View</a>
+					{% else %}	
+						<a class="btn btn-sm btn-primary" href="#">View</a>
+					{% endif %}
+				  </th>
+				</tr> 
 			{% endfor %}
-		</ul>
+			</tbody>
+		</table>
 	</div>
 </div>
 {% endblock %}
