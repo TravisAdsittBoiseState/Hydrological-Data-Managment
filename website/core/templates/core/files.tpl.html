@@ -1,3 +1,11 @@
+<style type="text/css">
+
+input.largeCheckbox{
+	width: 29px;
+	height: 29px;
+}
+</style>
+
 {% extends 'base.html' %}
 
 {% block content %}
@@ -20,8 +28,8 @@
 			</thead>
 			<tbody>
 			{% for file in files %}
-				<tr>			  
-				  <th><input type ="checkbox" id="checkbox_id" value="value"></th>
+				<tr>
+				  <th><input type="checkbox" class="largeCheckbox" id="checkbox_id" value="value"></th>
 				  <th>{{ file.file_name }}</th>
 				  <th>
 					<a class="btn btn-sm btn-success" href="download/?file={{ file.path }}/{{ file.file_name }}">Download</a>
@@ -29,14 +37,15 @@
 						<a class="btn btn-sm btn-primary" href="/viewNOAA?file={{ file.path }}/{{ file.file_name }}">View</a>
 					{% elif organization == "NASA" %}
 						<a class="btn btn-sm btn-primary" href="/viewNASA?file={{ file.path }}/{{ file.file_name }}">View</a>
-					{% else %}	
+					{% else %}
 						<a class="btn btn-sm btn-primary" href="#">View</a>
 					{% endif %}
 				  </th>
-				</tr> 
+				</tr>
 			{% endfor %}
 			</tbody>
 		</table>
 	</div>
 </div>
 {% endblock %}
+
