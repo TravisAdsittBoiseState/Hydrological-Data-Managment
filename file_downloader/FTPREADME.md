@@ -1,7 +1,7 @@
 # FTP_download.py overview
 
 This file downloads the file specified by the main script
-using the path and host name given. In the even that a 
+using the path and host name given. In the event that a 
 download fails, it will log the path and file name to a 
 text file explained in the next section. It will also 
 generate a log called download.log if a download fails and

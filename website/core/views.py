@@ -38,7 +38,6 @@ def noaa(request):
 	user = request.user
 	path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 	myfiles = os.path.join(path, r'file_downloader\downloaded-files\ftp.ssec.wisc.edu')
-	
 	file_list = []
 	for root, dirs, files in os.walk(myfiles):
 		for file in files:

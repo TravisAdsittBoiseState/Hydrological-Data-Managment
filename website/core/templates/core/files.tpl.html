@@ -12,7 +12,12 @@
 		<h5>Number of files: {{num_files}}</h5>
 		<ul class="list-group">
 			{% for file in files %}
-				    <a href="download/?file={{file}}"> {{file}} </a>
+					<input type ="checkbox" id="checkbox_id" value="value">
+					<center>
+
+					<a href="download/?file={{file}}"> {{file}} </a>
+
+					</center>
 			{% endfor %}
 		</ul>
 	</div>
