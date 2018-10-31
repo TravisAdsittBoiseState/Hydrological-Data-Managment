@@ -4,7 +4,17 @@ input.largeCheckbox{
 	width: 29px;
 	height: 29px;
 }
+
 </style>
+
+<script language="JavaScript">
+function toggle(source) {
+	var checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    for (var i = 0; i < checkboxes.length; i++) {
+		checkboxes[i].checked = source.checked;
+	}
+}
+</script>
 
 {% extends 'base.html' %}
 
@@ -21,9 +31,10 @@ input.largeCheckbox{
 		<table class="table table-striped">
 			<thead>
 				<tr>
-				  <th>Select</th>
+				  <th> <input type="checkbox" class='largeCheckbox' onClick="toggle(this)"/> Select All </th>
 				  <th>File Name</th>
-				  <th>Actions</th>
+				  <th>Actions</th>  
+				  <th></th>
 				</tr>
 			</thead>
 			<tbody>
