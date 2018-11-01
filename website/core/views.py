@@ -88,7 +88,7 @@ def count(dir, counter=0):
 @login_required
 def download(request):
         location = request.GET.get('file')
-        filename = location.split('\\')[-1]
+        filename = location.split('/')[-1]
         contents = open(location, 'rb')
         response = HttpResponse(contents, content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename="%s"' % filename
