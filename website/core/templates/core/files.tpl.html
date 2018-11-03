@@ -26,8 +26,9 @@ function toggle(source) {
 <div class="card col-md-6 offset-md-3" id="home-description">
 	<h2 class="text-center">Files currently in the system</h2>
 	<hr>
-	<div class="file-list">
-		<h5>Number of files: {{num_files}}</h5>
+		<div class="bulk_download">
+			<button class="btn btn-info">Download Selected</button>
+		</div>	
 		<table class="table table-striped">
 			<thead>
 				<tr>
@@ -56,6 +57,11 @@ function toggle(source) {
 			{% endfor %}
 			</tbody>
 		</table>
+		
+		<div class="bulk_download">
+			<button class="btn btn-info">Download Selected</button>
+		</div>
+		
 	</div>
 </div>
 {% endblock %}

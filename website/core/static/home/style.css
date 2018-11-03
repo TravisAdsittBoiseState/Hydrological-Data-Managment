@@ -34,3 +34,9 @@
 .file-list {
 	padding-bottom: 20px;
 }
+
+.bulk_download {
+	margin: auto;
+	width: 20%;
+	font-color: #000000;
+}
