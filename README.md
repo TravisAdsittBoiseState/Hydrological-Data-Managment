@@ -29,11 +29,15 @@ Rosenthal       | Aaron           | AaronRosenthal-Boise    | Developer
    
 ## Quickstart
 
-In order to install all the dependencies for this project simply run the following script:
+In order to install all the dependencies for this project simply run the following script as root:
 
-setup.sh   
+set-up.sh   
 
 After installing required dependencies it will also start up the webserver.
+
+To start the webserver normally use the start_server.py script.
+
+*NOTE* These scripts is not stored on the github repo however will be included in the package handoff.
    
 ## Config File Format:
 
